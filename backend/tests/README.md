@@ -1,6 +1,6 @@
 # Backend Testing
 
-This directory contains tests for the BloodLink backend.
+This directory contains tests for the HemoLink backend.
 
 ## Test Structure
 

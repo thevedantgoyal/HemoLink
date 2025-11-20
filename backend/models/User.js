@@ -23,7 +23,8 @@ const userSchema = new mongoose.Schema(
     },
     bloodGroup: { 
       type: String, 
-      enum: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-']
+      enum: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'],
+      required: false
     },
     phone: { 
       type: String 
@@ -34,6 +35,15 @@ const userSchema = new mongoose.Schema(
     isDonor: { 
       type: Boolean, 
       default: false 
+    },
+    needsBlood: {
+      type: Boolean,
+      default: false
+    },
+    needsBloodGroup: {
+      type: String,
+      enum: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'],
+      required: false
     },
     medicalRecords: [{
       date: { type: Date, default: Date.now },

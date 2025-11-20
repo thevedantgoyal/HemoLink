@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { FaCalendarAlt, FaMapMarkerAlt, FaArrowRight } from "react-icons/fa";
+import { FaCalendarAlt, FaMapMarkerAlt, FaArrowRight, FaCheckCircle } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-const CampaignCard = ({ campaign }) => {
+const CampaignCard = ({ campaign, onJoin, isJoined = false, isUserLoggedIn = false }) => {
+  const navigate = useNavigate();
+  const [isJoining, setIsJoining] = useState(false);
   return (
     <motion.div
       className="relative bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden border-2 border-transparent hover:border-red-200 group"
@@ -95,15 +98,59 @@ const CampaignCard = ({ campaign }) => {
         
         {/* Action Button */}
         <motion.button
-          className="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white py-4 rounded-xl font-bold text-base transition-all duration-300 shadow-lg hover:shadow-2xl flex items-center justify-center gap-3 group/button relative overflow-hidden"
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
+          onClick={async (e) => {
+            e.preventDefault();
+            if (!isUserLoggedIn) {
+              // Redirect to login if not logged in
+              navigate("/login");
+              return;
+            }
+            
+            if (isJoined) {
+              return; // Already joined, button should be disabled
+            }
+            
+            if (onJoin) {
+              setIsJoining(true);
+              try {
+                await onJoin(campaign._id || campaign.id);
+              } catch (error) {
+                console.error("Error joining campaign:", error);
+              } finally {
+                setIsJoining(false);
+              }
+            }
+          }}
+          disabled={isJoined || isJoining}
+          className={`w-full py-4 rounded-xl font-bold text-base transition-all duration-300 shadow-lg hover:shadow-2xl flex items-center justify-center gap-3 group/button relative overflow-hidden ${
+            isJoined 
+              ? 'bg-green-600 hover:bg-green-700 text-white cursor-not-allowed' 
+              : 'bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white'
+          }`}
+          whileHover={!isJoined && !isJoining ? { scale: 1.03 } : {}}
+          whileTap={!isJoined && !isJoining ? { scale: 0.97 } : {}}
         >
           {/* Shine effect on hover */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 group-hover/button:translate-x-full transition-transform duration-700"></div>
+          {!isJoined && (
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 group-hover/button:translate-x-full transition-transform duration-700"></div>
+          )}
           <span className="relative z-10 flex items-center gap-2">
-            Join Campaign
-            <FaArrowRight className="group-hover/button:translate-x-1 transition-transform" />
+            {isJoining ? (
+              <>
+                <span className="animate-spin">⏳</span>
+                Joining...
+              </>
+            ) : isJoined ? (
+              <>
+                <FaCheckCircle />
+                Joined
+              </>
+            ) : (
+              <>
+                Join Campaign
+                <FaArrowRight className="group-hover/button:translate-x-1 transition-transform" />
+              </>
+            )}
           </span>
         </motion.button>
       </div>

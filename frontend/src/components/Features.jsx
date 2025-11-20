@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaUserShield, FaBolt, FaGlobeAmericas, FaChartLine, FaMobileAlt, FaShieldAlt } from "react-icons/fa";
 
@@ -35,7 +36,7 @@ const Features = () => {
     {
       icon: FaMobileAlt,
       title: "Mobile Ready",
-      description: "Access BloodLink anywhere, anytime from any device with responsive design.",
+      description: "Access HemoLink anywhere, anytime from any device with responsive design.",
       gradient: "from-red-400 to-rose-500",
       bgGlow: "group-hover:shadow-red-500/50",
     },
@@ -230,26 +231,29 @@ const Features = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.3 }}
         >
-          <motion.a
-            href="#get-started"
-            className="inline-block relative px-10 py-5 bg-gradient-to-r from-red-600 via-rose-600 to-pink-600 text-white font-black text-lg rounded-2xl shadow-2xl shadow-red-400/50 overflow-hidden group"
+          <motion.div
             whileHover={{ scale: 1.05, y: -3 }}
             whileTap={{ scale: 0.95 }}
           >
-            <span className="relative z-10">Start Saving Lives Today 🚀</span>
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -skew-x-12"
-              animate={{
-                x: ["-200%", "200%"],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                repeatDelay: 1,
-                ease: "easeInOut",
-              }}
-            />
-          </motion.a>
+            <Link
+              to="/signup"
+              className="inline-block relative px-10 py-5 bg-gradient-to-r from-red-600 via-rose-600 to-pink-600 text-white font-black text-lg rounded-2xl shadow-2xl shadow-red-400/50 overflow-hidden group"
+            >
+              <span className="relative z-10">Start Saving Lives Today 🚀</span>
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -skew-x-12"
+                animate={{
+                  x: ["-200%", "200%"],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatDelay: 1,
+                  ease: "easeInOut",
+                }}
+              />
+            </Link>
+          </motion.div>
         </motion.div>
       </div>
     </section>

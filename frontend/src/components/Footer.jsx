@@ -8,10 +8,10 @@ const Footer = () => {
   
   const socialLinks = [
     { icon: FaFacebook, href: "#", label: "Facebook", color: "hover:bg-blue-600" },
-    { icon: FaInstagram, href: "https://www.instagram.com/chiragvishnoi01/", label: "Instagram", color: "hover:bg-pink-600" },
-    { icon: FaTwitter, href: "https://x.com/Raktchain?t=uxGclJKtqa8tP6PM8XIm1g&s=09", label: "Twitter", color: "hover:bg-sky-500" },
-    { icon: FaGithub, href: "https://github.com/chiragvishnoi-01", label: "GitHub", color: "hover:bg-gray-700" },
-    { icon: FaLinkedin, href: "https://www.linkedin.com/in/chiragvishnoi01/", label: "LinkedIn", color: "hover:bg-blue-700" },
+    { icon: FaInstagram, href: "https://www.instagram.com/thevedantgoyal/", label: "Instagram", color: "hover:bg-pink-600" },
+    { icon: FaTwitter, href: "https://x.com/vedantgoyal2605", label: "Twitter", color: "hover:bg-sky-500" },
+    { icon: FaGithub, href: "https://github.com/thevedantgoyal", label: "GitHub", color: "hover:bg-gray-700" },
+    { icon: FaLinkedin, href: "https://www.linkedin.com/in/vedant-goyal-985a74212", label: "LinkedIn", color: "hover:bg-blue-700" },
   ];
 
   const stats = [
@@ -133,7 +133,7 @@ const Footer = () => {
                   <FaHeart className="text-white text-2xl" />
                 </div>
               </motion.div>
-              <h3 className="text-3xl font-black bg-gradient-to-r from-red-500 via-rose-400 to-pink-500 bg-clip-text text-transparent">Raktchain</h3>
+              <h3 className="text-3xl font-black bg-gradient-to-r from-red-500 via-rose-400 to-pink-500 bg-clip-text text-transparent">HemoLink</h3>
             </div>
             <p className="text-gray-400 mb-6 text-sm leading-relaxed max-w-xs">
               Connecting donors with those in need. Every drop counts in saving lives. Together, we make a difference! 💉❤️
@@ -255,7 +255,7 @@ const Footer = () => {
                 </div>
                 <div>
                   <div className="font-semibold text-xs text-gray-500">Email</div>
-                  <div>raktchain@gmail.com</div>
+                  <div>thevedantgoyal@gmail.com</div>
                 </div>
               </motion.li>
               <motion.li 
@@ -267,7 +267,7 @@ const Footer = () => {
                 </div>
                 <div>
                   <div className="font-semibold text-xs text-gray-500">Phone</div>
-                  <div>+91 7393019961</div>
+                  <div>+91 7007593142</div>
                 </div>
               </motion.li>
               <motion.li 
@@ -296,7 +296,7 @@ const Footer = () => {
         >
           <div className="flex items-center gap-2 mb-4 md:mb-0">
             <p className="text-center md:text-left">
-              © {currentYear} <span className="font-bold text-red-400">Raktchain</span>. All Rights Reserved. 
+              © {currentYear} <span className="font-bold text-red-400">HemoLink</span>. All Rights Reserved. 
             </p>
             <motion.div
               animate={{ scale: [1, 1.3, 1] }}

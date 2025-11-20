@@ -11,7 +11,7 @@ const Chatbot = () => {
   const [messages, setMessages] = useState([
     {
       id: 1,
-      text: "Hello! 👋 I'm your Raktchain assistant powered by AI. How can I help you with blood donation today?",
+      text: "Hello! 👋 I'm your HemoLink assistant powered by AI. How can I help you with blood donation today?",
       sender: "bot",
       timestamp: new Date()
     }
@@ -144,7 +144,7 @@ const Chatbot = () => {
             <div className="flex justify-between items-start">
               <div className="flex items-center gap-2">
                 <FaInfoCircle className="text-blue-500" />
-                <span className="font-semibold text-gray-800">Raktchain AI Assistant</span>
+                <span className="font-semibold text-gray-800">HemoLink AI Assistant</span>
               </div>
               <button 
                 onClick={closeWelcome}
@@ -183,7 +183,7 @@ const Chatbot = () => {
               <div className="flex items-center gap-3">
                 <FaRobot className="text-2xl" />
                 <div>
-                  <h3 className="font-bold text-lg">Raktchain AI Assistant</h3>
+                  <h3 className="font-bold text-lg">HemoLink AI Assistant</h3>
                 </div>
               </div>
               <div className="flex gap-2">

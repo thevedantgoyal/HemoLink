@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: blood-donation-backend
+    name: hemolink-backend
     env: node
     region: singapore
     plan: free

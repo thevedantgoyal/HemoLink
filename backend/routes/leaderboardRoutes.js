@@ -13,12 +13,14 @@ router.get("/", async (req, res) => {
     const leaderboard = donors.map(donor => {
       const totalDonations = donor.donationHistory ? donor.donationHistory.length : 0;
       return {
-        id: donor._id,
+        _id: donor._id,
+        id: donor._id, // Keep both for compatibility
         name: donor.name,
         bloodGroup: donor.bloodGroup,
         city: donor.city,
         badges: donor.badges || [],
-        totalDonations
+        totalDonations,
+        donationHistory: donor.donationHistory || [] // Include for frontend compatibility
       };
     });
 

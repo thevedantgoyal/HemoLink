@@ -4,12 +4,15 @@ import { Link } from "react-router-dom";
 import axios from "../api/axiosConfig";
 import CampaignCard from "../components/CampaignCard";
 import { FaCalendarAlt, FaPlus, FaRedo } from "react-icons/fa";
+import { useAuth } from "../context/AuthContext";
 
 const Campaigns = () => {
+  const { user } = useAuth();
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [retryCount, setRetryCount] = useState(0);
+  const [joinMessage, setJoinMessage] = useState({ text: "", type: "" });
 
   useEffect(() => {
     const fetchCampaigns = async () => {
@@ -46,6 +49,47 @@ const Campaigns = () => {
     setRetryCount(0);
     setError(null);
     setLoading(true);
+  };
+
+  const handleJoinCampaign = async (campaignId) => {
+    if (!user) {
+      setJoinMessage({ text: "Please login to join campaigns", type: "error" });
+      setTimeout(() => setJoinMessage({ text: "", type: "" }), 3000);
+      return;
+    }
+
+    try {
+      const response = await axios.post(`/campaigns/${campaignId}/join`, {
+        userId: user.id || user._id,
+        userName: user.name,
+        userEmail: user.email
+      });
+
+      setJoinMessage({ text: response.data.message || "Successfully joined campaign! 🎉", type: "success" });
+      
+      // Update the campaign in the list
+      setCampaigns(prevCampaigns => 
+        prevCampaigns.map(campaign => 
+          campaign._id === campaignId || campaign.id === campaignId
+            ? { 
+                ...campaign, 
+                registeredDonors: response.data.campaign.registeredDonors,
+                participants: [...(campaign.participants || []), user.id || user._id]
+              }
+            : campaign
+        )
+      );
+
+      // Clear message after 3 seconds
+      setTimeout(() => setJoinMessage({ text: "", type: "" }), 3000);
+    } catch (error) {
+      console.error("Error joining campaign:", error);
+      setJoinMessage({ 
+        text: error.response?.data?.message || "Failed to join campaign. Please try again.", 
+        type: "error" 
+      });
+      setTimeout(() => setJoinMessage({ text: "", type: "" }), 5000);
+    }
   };
 
   if (loading) {
@@ -192,13 +236,31 @@ const Campaigns = () => {
           <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-6">
             Join our life-saving events and make a difference in your community
           </p>
-          <Link
-            to="/create-campaign"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-rose-600 text-white px-8 py-4 rounded-xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
-          >
-            <FaPlus />
-            Create New Campaign
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link
+              to="/create-campaign"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-rose-600 text-white px-8 py-4 rounded-xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+            >
+              <FaPlus />
+              Create New Campaign
+            </Link>
+          </div>
+          
+          {/* Join Message */}
+          {joinMessage.text && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className={`mt-4 px-6 py-3 rounded-xl font-semibold ${
+                joinMessage.type === "success" 
+                  ? "bg-green-100 text-green-700 border border-green-300" 
+                  : "bg-red-100 text-red-700 border border-red-300"
+              }`}
+            >
+              {joinMessage.text}
+            </motion.div>
+          )}
         </motion.div>
 
         {/* Campaigns Grid */}
@@ -224,10 +286,17 @@ const Campaigns = () => {
                 <CampaignCard
                   campaign={{
                     ...c,
-                    title: c.title || "Blood Donation Campaign",
+                    title: c.title || "HemoLink Campaign",
                     description: c.description || "Join us in saving lives through blood donation.",
                     date: c.date || Date.now(),
                   }}
+                  onJoin={handleJoinCampaign}
+                  isJoined={user && c.participants && Array.isArray(c.participants) && c.participants.some(p => {
+                    const participantId = typeof p === 'string' ? p : (p._id ? p._id.toString() : p.toString());
+                    const userId = (user.id || user._id || '').toString();
+                    return participantId === userId;
+                  })}
+                  isUserLoggedIn={!!user}
                 />
                 <div className="mt-3 ml-2 space-y-1">
                   {c.organizer && (

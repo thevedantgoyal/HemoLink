@@ -1,6 +1,6 @@
-# BloodLink Backend API
+# HemoLink Backend API
 
-This is the backend API for the BloodLink blood donation platform, built with Node.js, Express, and MongoDB.
+This is the backend API for the HemoLink blood donation platform, built with Node.js, Express, and MongoDB.
 
 ## API Endpoints
 

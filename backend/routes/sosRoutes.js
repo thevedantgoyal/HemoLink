@@ -47,7 +47,7 @@ If you can help, please contact ${requesterName} at ${email}${phone ? ` or ${pho
 Thank you for being a donor!
 
 Best regards,
-BloodLink Team`
+HemoLink Team`
       };
       
       return sendEmail(emailContent);

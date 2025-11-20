@@ -24,7 +24,7 @@ router.post("/register", async (req, res) => {
       return res.status(500).json({ message: "Server configuration error" });
     }
 
-    const { name, email, password, role, bloodGroup, phone, city, isDonor } = req.body;
+    const { name, email, password, role, bloodGroup, phone, city, isDonor, needsBlood, needsBloodGroup } = req.body;
     
     // Check if user exists
     const existingUser = await User.findOne({ email });
@@ -41,17 +41,29 @@ router.post("/register", async (req, res) => {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Create new user
-    const user = new User({
+    // Create new user - only include fields that have values
+    const userData = {
       name,
       email,
       password: hashedPassword,
       role: role || 'user',
-      bloodGroup,
-      phone,
-      city,
-      isDonor: isDonor || false
-    });
+      phone: phone || undefined,
+      city: city || undefined,
+      isDonor: isDonor || false,
+      needsBlood: needsBlood || false
+    };
+
+    // Only include bloodGroup if provided and not empty
+    if (bloodGroup && bloodGroup.trim() !== '') {
+      userData.bloodGroup = bloodGroup;
+    }
+
+    // Only include needsBloodGroup if provided and not empty
+    if (needsBloodGroup && needsBloodGroup.trim() !== '') {
+      userData.needsBloodGroup = needsBloodGroup;
+    }
+
+    const user = new User(userData);
 
     // Save user
     await user.save();
@@ -71,7 +83,9 @@ router.post("/register", async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
-        isDonor: user.isDonor
+        isDonor: user.isDonor,
+        needsBlood: user.needsBlood,
+        needsBloodGroup: user.needsBloodGroup
       }
     });
   } catch (error) {

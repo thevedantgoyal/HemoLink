@@ -39,6 +39,7 @@ const corsOptions = {
           'http://localhost:5173',
           'http://localhost:5001',
           'http://127.0.0.1:5173',
+          'http://127.0.0.1:5001',
           'http://127.0.0.1:3000',
           'https://aviothic2-0-bit-x-blood.vercel.app',
           'https://aviothic2-0-bitxblood-frontend.vercel.app',
@@ -129,7 +130,7 @@ app.get('/health', async (req, res) => {
   try {
     res.status(200).json({ 
       status: 'OK', 
-      message: 'Raktchain Backend is running!',
+      message: 'HemoLink Backend is running!',
       timestamp: new Date().toISOString(),
       environment: {
         NODE_ENV: process.env.NODE_ENV || 'development',
@@ -141,7 +142,7 @@ app.get('/health', async (req, res) => {
   } catch (error) {
     res.status(200).json({ 
       status: 'OK', 
-      message: 'Raktchain Backend is running!',
+      message: 'HemoLink Backend is running!',
       timestamp: new Date().toISOString(),
       environment: {
         NODE_ENV: process.env.NODE_ENV || 'development',
@@ -156,7 +157,7 @@ app.get('/health', async (req, res) => {
 // Root Route
 app.get('/', (req, res) => {
   res.status(200).json({ 
-    message: 'Raktchain API Server',
+    message: 'HemoLink API Server',
     version: '1.0.0',
     endpoints: {
       auth: '/api/auth',
@@ -223,7 +224,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ Server running on port ${PORT}`);
   console.log(`📡 Access server at: http://localhost:${PORT}`);

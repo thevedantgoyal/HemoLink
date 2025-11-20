@@ -11,6 +11,7 @@ const campaignSchema = new mongoose.Schema({
   city: { type: String, required: true },
   targetDonors: { type: Number, default: 50 },
   registeredDonors: { type: Number, default: 0 },
+  participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Users who joined
   status: { type: String, enum: ["upcoming", "active", "completed", "cancelled"], default: "upcoming" },
   bloodGroupsNeeded: [{ type: String }],
   createdAt: { type: Date, default: Date.now }

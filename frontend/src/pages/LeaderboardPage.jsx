@@ -229,7 +229,10 @@ const Leaderboard = () => {
                 // Safe access to donor properties
                 const donorName = donor?.name || 'Anonymous';
                 const donorCity = donor?.city || 'Unknown';
-                const donationCount = donor?.donationHistory?.length || 0;
+                // Backend returns totalDonations, but also check donationHistory for compatibility
+                const donationCount = donor?.totalDonations !== undefined 
+                  ? donor.totalDonations 
+                  : (donor?.donationHistory?.length || 0);
                 
                 return (
                   <motion.div
@@ -278,7 +281,10 @@ const Leaderboard = () => {
                     const donorName = donor?.name || 'Anonymous';
                     const donorCity = donor?.city || 'Unknown';
                     const donorBloodGroup = donor?.bloodGroup || 'N/A';
-                    const donationCount = donor?.donationHistory?.length || 0;
+                    // Backend returns totalDonations, but also check donationHistory for compatibility
+                    const donationCount = donor?.totalDonations !== undefined 
+                      ? donor.totalDonations 
+                      : (donor?.donationHistory?.length || 0);
                     
                     return (
                       <motion.li

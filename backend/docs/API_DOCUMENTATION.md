@@ -1,6 +1,6 @@
-# BloodLink API Documentation
+# HemoLink API Documentation
 
-This document provides detailed information about the BloodLink API endpoints, request/response formats, and authentication requirements.
+This document provides detailed information about the HemoLink API endpoints, request/response formats, and authentication requirements.
 
 ## 🔐 Authentication
 

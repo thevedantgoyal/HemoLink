@@ -1,7 +1,7 @@
 services:
   # Backend API
   - type: web
-    name: blood-donation-backend
+    name: hemolink-backend
     runtime: node
     region: singapore
     plan: free
@@ -16,7 +16,7 @@ services:
 
   # Frontend Static Site
   - type: web
-    name: blood-donation-frontend
+    name: hemolink-frontend
     runtime: static
     region: singapore
     plan: free

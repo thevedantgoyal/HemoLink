@@ -16,7 +16,10 @@ const Signup = () => {
     phone: "",
     city: "",
     bloodGroup: "",
-    isDonor: false
+    isDonor: false,
+    needsBlood: false,
+    needsBloodGroup: "",
+    userType: "" // "donor", "recipient", "both", or ""
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -33,6 +36,34 @@ const Signup = () => {
     setError("");
   };
 
+  const handleUserTypeChange = (type) => {
+    if (type === "donor") {
+      setFormData({
+        ...formData,
+        userType: "donor",
+        isDonor: true,
+        needsBlood: false,
+        needsBloodGroup: "" // Will be filtered out before sending
+      });
+    } else if (type === "recipient") {
+      setFormData({
+        ...formData,
+        userType: "recipient",
+        isDonor: false,
+        needsBlood: true,
+        bloodGroup: "" // Will be filtered out before sending
+      });
+    } else if (type === "both") {
+      setFormData({
+        ...formData,
+        userType: "both",
+        isDonor: true,
+        needsBlood: true
+      });
+    }
+    setError("");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -45,9 +76,22 @@ const Signup = () => {
       return;
     }
 
-    // Validate blood group if donor
+    // Validate user type selection
+    if (!formData.userType) {
+      setError("Please select whether you want to donate blood, need blood, or both");
+      setLoading(false);
+      return;
+    }
+
+    // Validate blood group requirements based on user type
     if (formData.isDonor && !formData.bloodGroup) {
-      setError("Please select your blood group");
+      setError("Please select your blood group for donation");
+      setLoading(false);
+      return;
+    }
+
+    if (formData.needsBlood && !formData.needsBloodGroup) {
+      setError("Please select the blood group you need");
       setLoading(false);
       return;
     }
@@ -61,19 +105,35 @@ const Signup = () => {
         city: formData.city,
         bloodGroup: formData.bloodGroup,
         isDonor: formData.isDonor,
+        needsBlood: formData.needsBlood,
+        needsBloodGroup: formData.needsBloodGroup,
+        userType: formData.userType,
         role: 'user'
       });
       
-      const response = await axios.post("/auth/register", {
+      // Prepare registration data - only include fields that have values
+      const registrationData = {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        phone: formData.phone,
-        city: formData.city,
-        bloodGroup: formData.bloodGroup,
+        phone: formData.phone || undefined,
+        city: formData.city || undefined,
         isDonor: formData.isDonor,
+        needsBlood: formData.needsBlood,
         role: 'user'
-      });
+      };
+
+      // Only include bloodGroup if donor is selected and has a value
+      if (formData.isDonor && formData.bloodGroup) {
+        registrationData.bloodGroup = formData.bloodGroup;
+      }
+
+      // Only include needsBloodGroup if needsBlood is true and has a value
+      if (formData.needsBlood && formData.needsBloodGroup) {
+        registrationData.needsBloodGroup = formData.needsBloodGroup;
+      }
+
+      const response = await axios.post("/auth/register", registrationData);
 
       console.log('Registration response:', response.data);
       
@@ -259,38 +319,111 @@ const Signup = () => {
             </div>
           </div>
 
-          {/* Donor Checkbox */ }
-          <div className="bg-red-50 rounded-xl p-6">
-            <label className="flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                name="isDonor"
-                checked={formData.isDonor}
-                onChange={handleChange}
-                className="w-5 h-5 text-red-600 border-gray-300 rounded focus:ring-red-500"
-              />
-              <span className="ml-3 text-gray-700 font-semibold">
-                I want to register as a blood donor 🩸
-              </span>
+          {/* User Type Selection */}
+          <div className="space-y-4">
+            <label className="block text-gray-700 font-semibold mb-3 text-lg">
+              I want to: <span className="text-red-600">*</span>
             </label>
+            <div className="grid md:grid-cols-3 gap-4">
+              {/* Donor Option */}
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className={`cursor-pointer border-2 rounded-xl p-6 transition-all ${
+                  formData.userType === "donor"
+                    ? 'border-red-600 bg-red-50 shadow-lg'
+                    : 'border-gray-200 hover:border-red-300 bg-white'
+                }`}
+                onClick={() => handleUserTypeChange("donor")}
+              >
+                <div className="text-center">
+                  <div className="text-4xl mb-3">🩸</div>
+                  <h3 className="font-bold text-gray-800 mb-2">Donate Blood</h3>
+                  <p className="text-sm text-gray-600">I want to help others by donating blood</p>
+                  <input
+                    type="radio"
+                    name="userType"
+                    value="donor"
+                    checked={formData.userType === "donor"}
+                    onChange={() => handleUserTypeChange("donor")}
+                    className="mt-3"
+                  />
+                </div>
+              </motion.div>
+
+              {/* Recipient Option */}
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className={`cursor-pointer border-2 rounded-xl p-6 transition-all ${
+                  formData.userType === "recipient"
+                    ? 'border-red-600 bg-red-50 shadow-lg'
+                    : 'border-gray-200 hover:border-red-300 bg-white'
+                }`}
+                onClick={() => handleUserTypeChange("recipient")}
+              >
+                <div className="text-center">
+                  <div className="text-4xl mb-3">❤️</div>
+                  <h3 className="font-bold text-gray-800 mb-2">Need Blood</h3>
+                  <p className="text-sm text-gray-600">I need blood or may need blood in future</p>
+                  <input
+                    type="radio"
+                    name="userType"
+                    value="recipient"
+                    checked={formData.userType === "recipient"}
+                    onChange={() => handleUserTypeChange("recipient")}
+                    className="mt-3"
+                  />
+                </div>
+              </motion.div>
+
+              {/* Both Option */}
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className={`cursor-pointer border-2 rounded-xl p-6 transition-all ${
+                  formData.userType === "both"
+                    ? 'border-red-600 bg-red-50 shadow-lg'
+                    : 'border-gray-200 hover:border-red-300 bg-white'
+                }`}
+                onClick={() => handleUserTypeChange("both")}
+              >
+                <div className="text-center">
+                  <div className="text-4xl mb-3">🤝</div>
+                  <h3 className="font-bold text-gray-800 mb-2">Both</h3>
+                  <p className="text-sm text-gray-600">I want to donate and may need blood</p>
+                  <input
+                    type="radio"
+                    name="userType"
+                    value="both"
+                    checked={formData.userType === "both"}
+                    onChange={() => handleUserTypeChange("both")}
+                    className="mt-3"
+                  />
+                </div>
+              </motion.div>
+            </div>
           </div>
 
-          {/* Blood Group (shown if isDonor is true) */ }
+          {/* Blood Group for Donor (shown if isDonor is true) */}
           {formData.isDonor && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               transition={{ duration: 0.3 }}
+              className="bg-red-50 rounded-xl p-6"
             >
-              <label className="block text-gray-700 font-semibold mb-2">Blood Group *</label>
+              <label className="block text-gray-700 font-semibold mb-3">
+                Your Blood Group (for donation) <span className="text-red-600">*</span>
+              </label>
               <div className="grid grid-cols-4 gap-3">
                 {bloodGroups.map((group) => (
                   <label
                     key={group}
                     className={`cursor-pointer border-2 rounded-xl p-3 text-center font-bold transition-all ${
                       formData.bloodGroup === group
-                        ? 'border-red-600 bg-red-50 text-red-600'
-                        : 'border-gray-200 hover:border-red-300'
+                        ? 'border-red-600 bg-red-100 text-red-600'
+                        : 'border-gray-200 hover:border-red-300 bg-white'
                     }`}
                   >
                     <input
@@ -298,6 +431,42 @@ const Signup = () => {
                       name="bloodGroup"
                       value={group}
                       checked={formData.bloodGroup === group}
+                      onChange={handleChange}
+                      className="hidden"
+                    />
+                    {group}
+                  </label>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Blood Group Needed (shown if needsBlood is true) */}
+          {formData.needsBlood && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              transition={{ duration: 0.3 }}
+              className="bg-rose-50 rounded-xl p-6"
+            >
+              <label className="block text-gray-700 font-semibold mb-3">
+                Blood Group Needed <span className="text-red-600">*</span>
+              </label>
+              <div className="grid grid-cols-4 gap-3">
+                {bloodGroups.map((group) => (
+                  <label
+                    key={group}
+                    className={`cursor-pointer border-2 rounded-xl p-3 text-center font-bold transition-all ${
+                      formData.needsBloodGroup === group
+                        ? 'border-red-600 bg-red-100 text-red-600'
+                        : 'border-gray-200 hover:border-red-300 bg-white'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="needsBloodGroup"
+                      value={group}
+                      checked={formData.needsBloodGroup === group}
                       onChange={handleChange}
                       className="hidden"
                     />
